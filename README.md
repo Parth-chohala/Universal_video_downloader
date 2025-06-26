@@ -17,23 +17,14 @@
 - 🚀 **Stream or download** directly — no file saved on server
 - 🔄 **Fallback formats** for unsupported resolutions
 
----
-
-<p align="center">
-  <img src="./screenshots/home.png" width="700" alt="Home UI"/>
-  <br/>
-  <em>🎯 Paste video URL and pick your download format</em>
-</p>
-
----
 
 ## 🔧 Getting Started
 
 💡 How to Use
-1.Enter a valid YouTube, Instagram, or X (Twitter) video URL.
-2.Click Fetch Video.
-3.Choose a quality option (e.g., 720p, Audio only).
-4.Hit Download!
+-1.Enter a valid YouTube, Instagram, or X (Twitter) video URL.
+-2.Click Fetch Video.
+-3.Choose a quality option (e.g., 720p, Audio only).
+-4.Hit Download!
 
 ### 1. Clone the Repository
 
