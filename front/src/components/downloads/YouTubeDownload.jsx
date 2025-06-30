@@ -197,9 +197,9 @@ const YouTubeDownload = ({ theme }) => {
             <AlertCircle size={24} />
             <span className="text-lg">{error}</span>
           </div>
-        )}
+        ) }
 
-        {videoData && (
+        {videoData ? (
           <div className={`${containerClass} backdrop-blur-md rounded-3xl p-6 shadow-xl border transition-all duration-300 animate-fadeIn`}>
             <div className="flex flex-col lg:flex-row gap-6 mb-6">
               <div className="relative group cursor-pointer">
@@ -314,6 +314,13 @@ const YouTubeDownload = ({ theme }) => {
               </div>
             </div>
           </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className={`${subtextClass} text-lg`}>
+              Enter a valid Youtube video URL to get started.
+            </p>
+          </div>
+
         )}
       </div>
     </div>

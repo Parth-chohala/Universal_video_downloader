@@ -3,6 +3,7 @@ import { Download, Search, AlertCircle, Play, FileVideo, Headphones, Music, Vide
 import axios from 'axios';
 
 const XDownload = ({ platform, theme }) => {
+
     const [url, setUrl] = useState('');
     const [loading, setLoading] = useState(false);
     const [videoData, setVideoData] = useState(null);
@@ -62,7 +63,7 @@ const XDownload = ({ platform, theme }) => {
             setLoading(false);
         } catch (err) {
             setLoading(false);
-            setError( "Error fetching video info");
+            setError("Error fetching video info");
             alert("Error fetching video info");
         }
     };
@@ -169,23 +170,23 @@ const XDownload = ({ platform, theme }) => {
                             </>
                         )}
                     </button>
-                     {showPasted && (
-            <div className="flex items-center space-x-1 text-green-600 text-sm font-semibold animate-fadeInOut ml-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 text-green-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
-                <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+                    {showPasted && (
+                        <div className="flex items-center space-x-1 text-green-600 text-sm font-semibold animate-fadeInOut ml-2">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="w-5 h-5 text-green-600"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                            >
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
+                                <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
 
-              <span>Pasted</span>
-            </div>
-          )}
+                            <span>Pasted</span>
+                        </div>
+                    )}
                 </div>
 
                 {loading && (
