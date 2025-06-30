@@ -46,7 +46,7 @@ const YouTubeDownload = ({ theme }) => {
     const formatMapArray = Object.values(formatMap);
     setVideoFormats(formatMapArray.filter(f => f.format_note !== 'low' && f.format_note !== 'medium' && f.format_note !== 'high' && f.format_note !== 'audio only' && f.format_note !== 'audio only (m4a)' && f.format_note !== 'audio only (opus)' && f.format_note !== 'high').reverse());
     setAudioFormats(formatMapArray.filter(f => f.resolution === 'audio only' || f.format_note === 'audio only (m4a)' || f.format_note === 'audio only (opus)' || f.format_note === 'high').reverse());
-    setMp4Formats(formats.filter(f => f.ext === 'mp4' && f.filesize == null && f.acodec != 'none'));
+    setMp4Formats(formats.filter(f => f.ext === 'mp4' && f.filesize  && f.acodec != 'none'));
     // Step 3: Return only the highest-file ones
 
     // console.log("Filtered formats:", formatMapArray);
@@ -126,6 +126,15 @@ const YouTubeDownload = ({ theme }) => {
   }
 
   useEffect(() => {
+     axios.post("http://localhost:5000/get-info/youtube",{url:'https://open.spotify.com/track/4VhqKzBeAlhTjLYZr0oJx8?si=28f7675ab3fd4728'})
+      .then((res) => {
+        console.log("YouTubeDownload component mounted, fetched initial data:", res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching initial data in YouTubeDownload component:", err);
+      });
+
+
     return () => {
       setUrl('');
       setVideoData(null);
