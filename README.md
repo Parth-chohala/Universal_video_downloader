@@ -39,5 +39,5 @@
 ### 📁 Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/video-downloader.git
+git clone https://github.com/Parth-chohala/video-downloader.git
 cd video-downloader
