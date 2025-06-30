@@ -44,7 +44,7 @@ function App() {
 
   return (
     <div id='#app' className={`min-h-screen transition-all duration-700 ${getBgGradient()} relative overflow-hidden`}>
-      <BackgroundLogo platform={selectedPlatform} theme={theme} />
+      {/* <BackgroundLogo platform={selectedPlatform} theme={theme} /> */}
       <ThemeToggle theme={theme} onThemeChange={setTheme} />
 
       <div className="relative z-10 container mx-auto px-4 py-8">
@@ -58,7 +58,7 @@ function App() {
               Video Downloader
             </h1>
           </div>
-          <p className={`text-xl ${subtextClass} max-w-2xl mx-auto`}>
+          <p className={`text-xl  ${subtextClass} max-w-2xl mx-auto`}>
             Download videos from YouTube, Instagram, and X (Twitter) with ease.
             High-quality downloads in multiple formats.
           </p>

@@ -37,15 +37,16 @@ const BackgroundLogo = ({ platform, theme }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-      <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 rotate-12">
+      <div className="absolute top-[5%] left-[3%] transform rotate-12">
         <Icon size={size * 0.8} className={`${color} transition-all duration-700`} />
       </div>
-      <div className="absolute bottom-1/4 right-1/4 transform translate-x-1/2 translate-y-1/2 -rotate-12">
+      <div className="absolute bottom-[10%] right-[10%] transform rotate-[-12deg]">
         <Icon size={size * 0.6} className={`${color} transition-all duration-700`} />
       </div>
-      <div className="absolute top-1/2 right-1/3 transform translate-x-1/2 -translate-y-1/2 rotate-45">
+      <div className="absolute top-[50%] right-[20%] transform translate-y-[-50%] rotate-45">
         <Icon size={size * 0.4} className={`${color} transition-all duration-700`} />
       </div>
+
     </div>
   );
 };

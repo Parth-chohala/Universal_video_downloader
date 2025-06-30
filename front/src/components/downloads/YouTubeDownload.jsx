@@ -10,6 +10,7 @@ const YouTubeDownload = ({ theme }) => {
   const [videoFormats, setVideoFormats] = useState([]);
   const [audioFormats, setAudioFormats] = useState([]);
   const [mp4formats, setMp4Formats] = useState([]);
+  const [showPasted, setShowPasted] = useState(false);
 
   // (6247691 / (1024 * 1024)).toFixed(2)
 
@@ -20,6 +21,8 @@ const YouTubeDownload = ({ theme }) => {
       const text = await navigator.clipboard.readText();
       if (text && /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(text)) {
         setUrl(text.trim());
+        setShowPasted(true);
+        setTimeout(() => setShowPasted(false), 2000); // Show for 2 seconds
         // fetchInfo();
 
         // console.warn("No valid URL found in clipboard");
@@ -33,7 +36,7 @@ const YouTubeDownload = ({ theme }) => {
 
 
   function filterAndPickLargestByFormatNote(formats) {
-    console.log("Filtering formats:", formats);
+    // console.log("Filtering formats:", formats);
     const formatMap = {};
 
     for (const f of formats) {
@@ -44,13 +47,13 @@ const YouTubeDownload = ({ theme }) => {
       }
     }
     const formatMapArray = Object.values(formatMap);
-    setVideoFormats(formatMapArray.filter(f => f.format_note !== 'low' && f.format_note !== 'medium' && f.format_note !== 'high' && f.format_note !== 'audio only' && f.format_note !== 'audio only (m4a)' && f.format_note !== 'audio only (opus)' && f.format_note !== 'high').reverse());
-    setAudioFormats(formatMapArray.filter(f => f.resolution === 'audio only' || f.format_note === 'audio only (m4a)' || f.format_note === 'audio only (opus)' || f.format_note === 'high').reverse());
-    setMp4Formats(formats.filter(f => f.ext === 'mp4' && f.filesize  && f.acodec != 'none'));
+    setVideoFormats(formatMapArray.filter(f => f.format_note !== 'low' && f.resolution != 'audio only' && f.format_note !== 'medium' && f.format_note !== 'high' && f.format_note !== 'audio only' && f.format_note !== 'audio only (m4a)' && f.format_note !== 'audio only (opus)' && f.format_note !== 'high').reverse());
+    setAudioFormats(formatMapArray.filter(f => f.resolution === 'audio only' && !f.format_note.includes('DRC')).reverse());
+    setMp4Formats(formats.filter(f => f.ext === 'mp4' && f.filesize && f.acodec != 'none'));
     // Step 3: Return only the highest-file ones
 
     // console.log("Filtered formats:", formatMapArray);
-    console.log("Video formats:", videoFormats);
+    // console.log("Video formats:", videoFormats);
     // console.log("Audio formats:", audioFormats);
     // console.log("MP4 formats:", mp4formats);
 
@@ -69,13 +72,11 @@ const YouTubeDownload = ({ theme }) => {
     // console.log("Fetching video info for URL:", url.trim());
     try {
       const res = await axios.post("http://localhost:5000/get-info/youtube", { url: url.trim() });
-      // console.log("Video info response:", res.data )
       await setVideoData({ ...res.data, availableFormats: filterAndPickLargestByFormatNote(res.data.availableFormats) });
-      // console.log("Video info:", filterAndPickLargestByFormatNote(res.data.availableFormats));
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      setError(err instanceof Error ? err.message : "Error fetching video info");
+      setError("Error fetching video info");
       alert("Error fetching video info");
     }
   };
@@ -126,15 +127,6 @@ const YouTubeDownload = ({ theme }) => {
   }
 
   useEffect(() => {
-     axios.post("http://localhost:5000/get-info/youtube",{url:'https://open.spotify.com/track/4VhqKzBeAlhTjLYZr0oJx8?si=28f7675ab3fd4728'})
-      .then((res) => {
-        console.log("YouTubeDownload component mounted, fetched initial data:", res.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching initial data in YouTubeDownload component:", err);
-      });
-
-
     return () => {
       setUrl('');
       setVideoData(null);
@@ -161,6 +153,8 @@ const YouTubeDownload = ({ theme }) => {
             disabled={loading || !url.trim()}
             className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-w-[140px]"
           >
+
+
             {loading ? (
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
             ) : (
@@ -170,6 +164,23 @@ const YouTubeDownload = ({ theme }) => {
               </>
             )}
           </button>
+          {showPasted && (
+            <div className="flex items-center space-x-1 text-green-600 text-sm font-semibold animate-fadeInOut ml-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5 text-green-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
+                <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+
+              <span>Pasted</span>
+            </div>
+          )}
         </div>
 
         {loading && (

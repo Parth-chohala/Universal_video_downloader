@@ -10,10 +10,10 @@ const DownloadSection = ({ platform, theme }) => {
   const [error, setError] = useState(null);
 
   const fetchInfo = async () => {
-    console.log("Fetching video info for URL:", url.trim());
+    // console.log("Fet/ching video info for URL:", url.trim());
     try {
       const res = await axios.post("http://localhost:5000/get-info", { url: url.trim() });
-      console.log("Video info:", res.data);
+      // console.log("Video info:", res.data);
       setVideoData(res.data);
     } catch (err) {
       alert("Error fetching video info");

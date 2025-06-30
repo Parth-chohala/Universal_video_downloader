@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Search, AlertCircle, Play, FileVideo, Headphones, Music,Video  } from 'lucide-react';
+import { Download, Search, AlertCircle, Play, FileVideo, Headphones, Music, Video } from 'lucide-react';
 import axios from 'axios';
 
 const InstagramDownload = ({ platform, theme }) => {
@@ -10,6 +10,8 @@ const InstagramDownload = ({ platform, theme }) => {
   const [videoFormats, setVideoFormats] = useState({});
   const [audioFormats, setAudioFormats] = useState({});
   const [mp4formats, setMp4Formats] = useState({});
+  const [showPasted, setShowPasted] = useState(false);
+
   const platformConfig = {
     instagram: {
       placeholder: 'Enter Instagram video URL (e.g., https://instagram.com/p/...)',
@@ -42,24 +44,24 @@ const InstagramDownload = ({ platform, theme }) => {
   };
 
   function formatTime(seconds) {
-  seconds = Number(seconds);
+    seconds = Number(seconds);
 
-  const hrs = Math.floor(seconds / 3600);
-  const mins = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
 
-  const padded = (num) => String(num).padStart(2, '0');
+    const padded = (num) => String(num).padStart(2, '0');
 
-  if (hrs > 0) {
-    return `${padded(hrs)}:${padded(mins)}:${padded(secs)}`;
-  } else if (mins > 0) {
-    return `${padded(mins)}:${padded(secs)}`;
-  } else {
-    return `${padded(secs)}`;
+    if (hrs > 0) {
+      return `${padded(hrs)}:${padded(mins)}:${padded(secs)}`;
+    } else if (mins > 0) {
+      return `${padded(mins)}:${padded(secs)}`;
+    } else {
+      return `${padded(secs)}`;
+    }
   }
-}
 
- const fetchInfo = async () => {
+  const fetchInfo = async () => {
     setLoading(true);
     setError(null);
     setVideoData(null);
@@ -71,34 +73,38 @@ const InstagramDownload = ({ platform, theme }) => {
     // console.log("Fetching video info for URL:", url.trim());
     try {
       const res = await axios.post("http://localhost:5000/get-info/insta", { url: url.trim() });
-      console.log("Video info response:", res.data )
+      // console.log("Video info response:", res.data)
       await setVideoData({ ...res.data, availableFormats: filterAndPickLargestByFormatNote(res.data.availableFormats) });
       // console.log("Video info:", filterAndPickLargestByFormatNote(res.data.availableFormats));
       setLoading(false);
     } catch (err) {
-       setLoading(false);
-      setError(err instanceof Error ? err.message : "Error fetching video info");
+      setLoading(false);
+      setError( "Error fetching video info");
       alert("Error fetching video info");
     }
   };
-  document.addEventListener('focus',readFromClipboard, true);
+  document.addEventListener('focus', readFromClipboard, true);
   async function readFromClipboard() {
-  try {
-    const text = await navigator.clipboard.readText();
-    const platform = text.includes("instagram.com") ? "instagram" : "x";
-    if (text && platform === "instagram" && /^https?:\/\/(www\.)?(instagram\.com)/.test(text)) {
-      setUrl(text.trim());
-      // fetchInfo();
+    try {
+      const text = await navigator.clipboard.readText();
+      const platform = text.includes("instagram.com") ? "instagram" : "x";
+      if (text && platform === "instagram" && /^https?:\/\/(www\.)?(instagram\.com)/.test(text)) {
+        setUrl(text.trim());
+        setShowPasted(true);
+        setTimeout(() => {
+          setShowPasted(false);
+        }, 2000);
+        // fetchInfo();
 
-      // console.warn("No valid URL found in clipboard");
-      return;
+        // console.warn("No valid URL found in clipboard");
+        return;
+      }
+
+
+    } catch (err) {
+      console.error("Failed to read clipboard: ", err);
     }
-
-
-  } catch (err) {
-    console.error("Failed to read clipboard: ", err);
   }
-}
 
 
   const getQualityColor = (quality) => {
@@ -112,8 +118,8 @@ const InstagramDownload = ({ platform, theme }) => {
   function filterAndPickLargestByFormatNote(formats) {
 
 
-    const videoformatstemp = formats.filter(f => f.container === "mp4_dash" && f.ext=== 'mp4');
-    setVideoFormats(videoformatstemp[videoformatstemp.length -1]||{});
+    const videoformatstemp = formats.filter(f => f.container === "mp4_dash" && f.ext === 'mp4');
+    setVideoFormats(videoformatstemp[videoformatstemp.length - 1] || {});
 
     // Step 2: Create a map of highest filesize per format_note
     setMp4Formats(formats.filter(f => !f.format.includes("dash"))[0] || {});
@@ -121,10 +127,10 @@ const InstagramDownload = ({ platform, theme }) => {
     // Step 3: Return only the highest-file ones
 
     // console.log("Filtered formats:", formatMapArray);
-    console.log("formats:", formats);
-    console.log("Video formats:", videoFormats);
-    console.log("Audio formats:", audioFormats);
-    console.log("MP4 formats:", mp4formats);
+    // console.log("formats:", formats);
+    // console.log("Video formats:", videoFormats);
+    // console.log("Audio formats:", audioFormats);
+    // console.log("MP4 formats:", mp4formats);
 
     return Object.values(formats);
   }
@@ -207,6 +213,23 @@ const InstagramDownload = ({ platform, theme }) => {
               </>
             )}
           </button>
+           {showPasted && (
+            <div className="flex items-center space-x-1 text-green-600 text-sm font-semibold animate-fadeInOut ml-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5 text-green-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
+                <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+
+              <span>Pasted</span>
+            </div>
+          )}
         </div>
 
         {loading && (
@@ -256,7 +279,7 @@ const InstagramDownload = ({ platform, theme }) => {
               </div>
             </div>
 
-           <div className="space-y-6">
+            <div className="space-y-6">
               <h4 className={`text-xl font-semibold ${textClass} mb-4`}>Download Options</h4>
               {mp4formats && (
                 <div className="mb-6">
@@ -266,19 +289,19 @@ const InstagramDownload = ({ platform, theme }) => {
                   </h5>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
 
-                      <a
-                        href={`${mp4formats.url}`}
-                        target='_blank'
-                        key={mp4formats.format_note}
-                        className={`
+                    <a
+                      href={`${mp4formats.url}`}
+                      target='_blank'
+                      key={mp4formats.format_note}
+                      className={`
                         p-4 rounded-2xl bg-gradient-to-r ${getQualityColor(mp4formats.format_note)}
                         text-white hover:shadow-lg transform hover:scale-105 transition-all duration-300
                         focus:outline-none focus:ring-4 focus:ring-blue-300 text-center
                       `}
-                      >
-                        <div className="font-bold text-lg">Mp4 Download</div>
-                        {/* <div className="text-white/70 text-xs mt-1">{(format.filesize / (1024 * 1024)).toFixed(2)} MB</div> */}
-                      </a>
+                    >
+                      <div className="font-bold text-lg">Mp4 Download</div>
+                      {/* <div className="text-white/70 text-xs mt-1">{(format.filesize / (1024 * 1024)).toFixed(2)} MB</div> */}
+                    </a>
 
                   </div>
                 </div>
@@ -291,19 +314,19 @@ const InstagramDownload = ({ platform, theme }) => {
                 </h5>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
 
-                    <a
-                      href={`${videoFormats.url}`}
-                      target='_blank'
-                      key={videoFormats.format_note}
-                      className={`
+                  <a
+                    href={`${videoFormats.url}`}
+                    target='_blank'
+                    key={videoFormats.format_note}
+                    className={`
                         p-4 rounded-2xl bg-gradient-to-r ${getQualityColor(videoFormats.format_note)}
                         text-white hover:shadow-lg transform hover:scale-105 transition-all duration-300
                         focus:outline-none focus:ring-4 focus:ring-blue-300 text-center
                       `}
-                    >
-                      <div className="font-bold text-lg">Video Download</div>
-                      {/* <div className="text-white/70 text-xs mt-1">{(videoFormats.filesize / (1024 * 1024)).toFixed(2)} MB</div> */}
-                    </a>
+                  >
+                    <div className="font-bold text-lg">Video Download</div>
+                    {/* <div className="text-white/70 text-xs mt-1">{(videoFormats.filesize / (1024 * 1024)).toFixed(2)} MB</div> */}
+                  </a>
 
                 </div>
               </div>
@@ -316,26 +339,26 @@ const InstagramDownload = ({ platform, theme }) => {
                 </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-                    <a
-                      href={`${audioFormats.url}`}
-                      target='_blank'
-                      key={audioFormats.format_note}
-                      className={`
+                  <a
+                    href={`${audioFormats.url}`}
+                    target='_blank'
+                    key={audioFormats.format_note}
+                    className={`
                         flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r
                         ${audioFormats.format_note === 'high' || audioFormats.format_note === 'medium' || audioFormats.format_note === 'low' ? 'from-purple-500 to-purple-600' : 'from-indigo-500 to-indigo-600'}
                         text-white hover:shadow-lg transform hover:scale-[1.02] transition-all duration-300
                         focus:outline-none focus:ring-4 focus:ring-purple-300
 
                       `}
-                    >
-                      <div className="flex items-center space-x-4">
-                        <Music size={24} />
-                        <div className="text-left">
-                          <div className="font-semibold text-lg capitalize"> Audio Download</div>
-                        </div>
+                  >
+                    <div className="flex items-center space-x-4">
+                      <Music size={24} />
+                      <div className="text-left">
+                        <div className="font-semibold text-lg capitalize"> Audio Download</div>
                       </div>
-                      <Download size={20} />
-                    </a>
+                    </div>
+                    <Download size={20} />
+                  </a>
 
                 </div>
               </div>
