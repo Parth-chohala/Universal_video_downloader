@@ -36,7 +36,8 @@ const YouTubeDownload = ({ theme }) => {
 
 
   function filterAndPickLargestByFormatNote(formats) {
-    // console.log("Filtering formats:", formats);
+    // console.log("Filtered formats:", formatMapArray);
+    console.log("Filtering formats:", formats);
     const formatMap = {};
 
     for (const f of formats) {
@@ -52,7 +53,6 @@ const YouTubeDownload = ({ theme }) => {
     setMp4Formats(formats.filter(f => f.ext === 'mp4' && f.filesize && f.acodec != 'none'));
     // Step 3: Return only the highest-file ones
 
-    // console.log("Filtered formats:", formatMapArray);
     // console.log("Video formats:", videoFormats);
     // console.log("Audio formats:", audioFormats);
     // console.log("MP4 formats:", mp4formats);
@@ -72,6 +72,7 @@ const YouTubeDownload = ({ theme }) => {
     // console.log("Fetching video info for URL:", url.trim());
     try {
       const res = await axios.post("http://localhost:5000/get-info/youtube", { url: url.trim() });
+      console.log("Video info response:", res.data);
       await setVideoData({ ...res.data, availableFormats: filterAndPickLargestByFormatNote(res.data.availableFormats) });
       setLoading(false);
     } catch (err) {

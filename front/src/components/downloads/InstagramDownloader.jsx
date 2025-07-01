@@ -79,7 +79,7 @@ const InstagramDownload = ({ platform, theme }) => {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      setError( "Error fetching video info");
+      setError("Error fetching video info");
       alert("Error fetching video info");
     }
   };
@@ -165,6 +165,19 @@ const InstagramDownload = ({ platform, theme }) => {
   }, []);
 
   useEffect(() => {
+    axios.post("http://localhost:5000/get-info/insta", { url: "https://www.linkedin.com/posts/floatbot_lisa-claims-fnol-activity-7336081827427774481-vVAm?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAEyuAGEBtEDldc_iFCDMRZzhWM6hwh3WSig" })
+      .then((res) => {
+        console.log({
+          ...res.data, availableFormats: filterAndPickLargestByFormatNote
+            (res.data.availableFormats)
+        });
+
+      })
+      .catch((err) => {
+        console.error("Error fetching dummy data:", err);
+      });
+
+
     setUrl('');
     setVideoData(null);
     setError(null);
@@ -213,7 +226,7 @@ const InstagramDownload = ({ platform, theme }) => {
               </>
             )}
           </button>
-           {showPasted && (
+          {showPasted && (
             <div className="flex items-center space-x-1 text-green-600 text-sm font-semibold animate-fadeInOut ml-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -364,14 +377,13 @@ const InstagramDownload = ({ platform, theme }) => {
               </div>
             </div>
           </div>
-        ): (
-                    <div className="text-center py-12">
-                        <p className={`${subtextClass} text-lg`}>
-                            Enter a valid Instagram video URL to get started.
-                        </p>
-                    </div>
-
-                )}
+        ) : (
+          <div className="text-center py-12">
+            <p className={`${subtextClass} text-lg`}>
+              Enter a valid Instagram video URL to get started.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

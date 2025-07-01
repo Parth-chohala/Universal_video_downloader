@@ -1,11 +1,12 @@
 import React from 'react';
-import { Youtube, Instagram, Twitter } from 'lucide-react';
+import { Youtube, Instagram, Twitter,Linkedin } from 'lucide-react';
 
 const Toolbar = ({ selectedPlatform, onPlatformChange, theme }) => {
   const platforms = [
     { id: 'youtube', name: 'YouTube', icon: Youtube, color: 'hover:bg-red-50 hover:text-red-600' },
     { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'hover:bg-pink-50 hover:text-pink-600' },
     { id: 'x', name: 'X (Twitter)', icon: Twitter, color: 'hover:bg-gray-800 hover:text-white' },
+    { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, color: 'hover:bg-blue-50 hover:text-blue-600' },
   ];
 
   const toolbarBgClass = theme === 'dark'

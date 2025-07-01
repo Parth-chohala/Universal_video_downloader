@@ -7,6 +7,7 @@ import YouTubeDownload from './components/downloads/YouTubeDownload';
 import InstagramDownload from './components/downloads/InstagramDownloader';
 import ThemeToggle from './components/ThemeToggle';
 import XDownload from './components/downloads/XDownloader';
+import LinkedInDownload from './components/downloads/LinkedInDownload';
 
 function App() {
   const [selectedPlatform, setSelectedPlatform] = useState('youtube');
@@ -23,6 +24,9 @@ function App() {
       x: theme === 'dark'
         ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900'
         : 'bg-gradient-to-br from-gray-50 via-slate-50 to-blue-50',
+      linkedin: theme === 'dark'
+        ? 'bg-gradient-to-br from-gray-900 via-blue-900/20 to-gray-900'
+        : 'bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50',
     };
 
     return baseGradients[selectedPlatform];
@@ -39,12 +43,14 @@ function App() {
       return <InstagramDownload platform={selectedPlatform} theme={theme} />;
     } else if (selectedPlatform === 'x') {
       return <XDownload platform={selectedPlatform} theme={theme} />;
+    } else if (selectedPlatform === 'linkedin') {
+      return <LinkedInDownload platform={selectedPlatform} theme={theme} />;
     }
   };
 
   return (
     <div id='#app' className={`min-h-screen transition-all duration-700 ${getBgGradient()} relative overflow-hidden`}>
-      {/* <BackgroundLogo platform={selectedPlatform} theme={theme} /> */}
+      {/* <BackgroundLogo pl/atform={selectedPlatform} theme={theme} /> */}
       <ThemeToggle theme={theme} onThemeChange={setTheme} />
 
       <div className="relative z-10 container mx-auto px-4 py-8">
